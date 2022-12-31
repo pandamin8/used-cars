@@ -1,22 +1,31 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { ReportsModule } from './reports/reports.module';
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { UsersModule } from './users/users.module'
+import { ReportsModule } from './reports/reports.module'
 import { User } from './users/user.entity'
 import { Report } from './reports/reports.entity'
+import { AuthMiddleware } from './middleware/auth.middleware'
 
 @Module({
-  imports: [TypeOrmModule.forRoot({ 
-    type: 'sqlite',
-    database: 'db.sqlite',
-    entities: [User, Report],
-    synchronize: true
+  imports: [
+    TypeOrmModule.forRoot({ 
+      type: 'sqlite',
+      database: 'db.sqlite',
+      entities: [User, Report],
+      synchronize: true
    }),
     UsersModule,
-    ReportsModule],
+    ReportsModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+      consumer
+        .apply(AuthMiddleware)
+        .forRoutes('/auth/whoami')
+  }
+}
