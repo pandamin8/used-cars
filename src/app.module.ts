@@ -6,7 +6,6 @@ import { UsersModule } from './users/users.module'
 import { ReportsModule } from './reports/reports.module'
 import { User } from './users/user.entity'
 import { Report } from './reports/reports.entity'
-import { AuthMiddleware } from './middleware/auth.middleware'
 
 @Module({
   imports: [
@@ -22,10 +21,6 @@ import { AuthMiddleware } from './middleware/auth.middleware'
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-      consumer
-        .apply(AuthMiddleware)
-        .forRoutes('/auth/whoami')
-  }
+export class AppModule {
+
 }

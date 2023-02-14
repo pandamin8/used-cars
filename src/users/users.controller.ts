@@ -8,7 +8,8 @@ import {
     Param,
     Query,
     Session,
-    Request
+    Request,
+    UseGuards
 } from '@nestjs/common'
 import { NotFoundException, BadRequestException } from '@nestjs/common'
 import { CreateUserDto } from './dtos/create-user.dto'
@@ -18,6 +19,9 @@ import { Serialize } from '../interceptors/serialize.interceptor'
 import { UserDto } from './dtos/user.dto'
 import { AuthService } from './auth.service'
 import { Request as _Request } from 'express'
+import { CurrentUser } from './decorators/current-user.decorator'
+import { User } from './user.entity'
+import { AuthGuard } from '../guards/auth.guard'
 
 @Serialize(UserDto)
 @Controller('auth')
@@ -42,9 +46,15 @@ export class UsersController {
         return user
     }
 
+    // @Get('/whoami')
+    // whoAmI(@Request() req: _Request, @Session() session: any) {
+    //     return req.user
+    // }
+
     @Get('/whoami')
-    whoAmI(@Request() req: _Request, @Session() session: any) {
-        return req.user
+    @UseGuards(AuthGuard)
+    whoAmI(@CurrentUser() user: User) {
+        return user
     }
 
     @Post('/signout')
