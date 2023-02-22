@@ -1,0 +1,13 @@
+### Create a report for a used car
+POST http://localhost:3000/reports
+content-type: application/json
+
+{
+    "make": "toyota",
+    "model": "corolla",
+    "year": 1990,
+    "milage": 300000,
+    "lng": 0,
+    "lat": 0,
+    "price": 20000
+}
