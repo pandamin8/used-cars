@@ -11,6 +11,9 @@ export class AuthService {
     
     async signup(email: string, password: string) {
 
+        const doesUserExist = await this.usersService.findByEmail(email)
+        if (doesUserExist?.email) throw new BadRequestException('Email is in use')
+
         const salt = randomBytes(8).toString('hex')
         const hash = (await scrypt(password, salt, 32)) as Buffer
         const result = salt + '.' + hash.toString('hex')
